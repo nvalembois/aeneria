@@ -1,0 +1,10 @@
+# renovate: datasource=github-tags depName=aeneria/aeneria-app
+AENERIA_VERSION=2.1.1
+# renovate: datasource=docker depName=docker.io/library/php
+PHP_FPM_VERSION=fpm-alpine3.19
+# renovate: datasource=docker depName=docker.io/nginxinc/nginx-unprivileged
+NGINX_VERSION=1.25.4-alpine3.18
+# renovate: datasource=docker depName=docker.io/library/php
+PHP_FPM_DIGEST_VERSION=fpm-alpine3.19@sha256:0ac27ccf6d303a57779c610aad4fe8ae8d0b0b2b7e3626477a157308d1ff5454
+# renovate: datasource=docker depName=docker.io/nginxinc/nginx-unprivileged
+NGINX_DIGEST_VERSION=1.25.4-alpine3.18@sha256:32dba63fb0cd29dd614dd15c7fb474f87902884155f9bf663be70c29a3efd233

@@ -1,12 +1,13 @@
-FROM docker.io/nginxinc/nginx-unprivileged:1.25.4-alpine3.18
-ARG AENERIA_RELEASE=2.1.1
+ARG NGINX_VERSION
+FROM docker.io/nginxinc/nginx-unprivileged:${NGINX_VERSION}
 
 USER root
 
+ARG AENERIA_VERSION
 RUN set -e \
  && install -d -o root -g nginx -m 0750 /var/www \
- && wget -q -O - https://gitlab.com/aeneria/aeneria-app/-/archive/${AENERIA_RELEASE}/aeneria-app-${AENERIA_RELEASE}.tar.bz2 \
- | tar xjvf - --directory /var/www --strip-components=2 aeneria-app-${AENERIA_RELEASE}/app/public
+ && wget -q -O - https://gitlab.com/aeneria/aeneria-app/-/archive/${AENERIA_VERSION}/aeneria-app-${AENERIA_VERSION}.tar.bz2 \
+ | tar xjvf - --directory /var/www --strip-components=2 aeneria-app-${AENERIA_VERSION}/app/public
 
 ADD nginx.conf /etc/nginx/nginx.conf
 ADD default.conf /etc/nginx/conf.d/
