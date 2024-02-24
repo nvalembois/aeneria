@@ -1,2 +1,2 @@
 # renovate: datasource=docker depName=docker.io/library/php
-PHP_FPM_VERSION=fpm-alpine3.19@sha256:0ac27ccf6d303a57779c610aad4fe8ae8d0b0b2b7e3626477a157308d1ff5454
+PHP_FPM_VERSION=fpm-alpine3.19

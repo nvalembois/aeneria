@@ -33,13 +33,15 @@ jobs:
         run: |
           for file in versions.txt images/app/versions.txt
           do
-          [[ ! -f $file ]] && continue
-          echo "Read $file"
+            [[ ! -f $file ]] && continue
+            echo "-- Read $file"
             while IFS== read k v
             do
               [[ $k =~ \s*# ]] && continue
-              echo "::set-output ${k}=${v}::"
-              echo "::set-output ${k}_SHORT=${v/@sha256*}::"
+              echo "${k}=${v}"
+              echo "${k}=${v}" >> $GITHUB_OUTPUT
+              echo "${k}_SHORT=${v/@sha256*}"
+              echo "${k}_SHORT=${v/@sha256*}" >> $GITHUB_OUTPUT
             done < "$file"
           done
       - 
