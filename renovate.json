@@ -5,7 +5,7 @@
   ],
   "regexManagers": [
     {
-      "fileMatch": ["^versions.txt$"],
+      "fileMatch": ["^versions.*.txt$"],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s.+?_VERSION\\s*=\\s*\"?(?<currentValue>.+?)\"?(\\s|$)"
       ],
@@ -15,7 +15,7 @@
   "packageRules": [
     {
       "matchDatasources": ["docker"],
-      "pinDigests": false
+      "pinDigests": true
     },
     {
       "matchDatasources": ["github-tags", "github-runners"],
