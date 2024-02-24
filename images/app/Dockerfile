@@ -1,6 +1,5 @@
 # FROM docker.io/library/php:cli-alpine3.19 AS build
 
-# ADD opcache.ini "$PHP_INI_DIR/conf.d/opcache.ini"
 # ADD preload.php /tmp/preload.php
 
 # RUN set -e \
@@ -30,6 +29,7 @@ RUN set -e \
  && chgrp -R php /var/www \
  && chmod -R o-rwx,g-w,g+rX /var/www
 
+ADD zz-opcache.ini "$PHP_INI_DIR/conf.d/zz-opcache.ini"
 ADD www.conf zz-docker.conf /usr/local/etc/php-fpm.d/
 
 ENV FPM_LISTEN 9000
