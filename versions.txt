@@ -1,3 +1,5 @@
 # renovate: datasource=github-tags depName=aeneria/aeneria-app
 AENERIA_VERSION=2.1.1
+# renovate: datasource=docker depName=docker.io/library/node
+NODE_VERSION=16.20.2-alpine3.18
 # ensure newline after last value
