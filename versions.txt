@@ -1,2 +1,3 @@
 # renovate: datasource=github-tags depName=aeneria/aeneria-app
 AENERIA_VERSION=2.1.1
+# ensure newline after last value
