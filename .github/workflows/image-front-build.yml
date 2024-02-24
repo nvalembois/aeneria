@@ -53,6 +53,6 @@ jobs:
           platforms: linux/amd64
           build-args: |
             AENERIA_VERSION=${{ steps.versions.outputs.AENERIA_VERSION }}
-            NGINX_VERSION=${{ steps.versions.outputs.NGINX_DIGEST_VERSION }}
+            NGINX_VERSION=${{ steps.versions.outputs.NGINX_VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
