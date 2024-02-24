@@ -73,6 +73,7 @@ jobs:
           platforms: linux/amd64
           build-args: |
             AENERIA_VERSION=${{ steps.versions.outputs.AENERIA_VERSION }}
+            NODE_VERSION=${{ steps.versions.outputs.NODE_VERSION }}
             NGINX_VERSION=${{ steps.versions.outputs.NGINX_VERSION }}
           tags: |
             ${{ github.repository }}:${{ steps.versions.outputs.AENERIA_VERSION_SHORT }}

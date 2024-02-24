@@ -72,6 +72,7 @@ jobs:
           platforms: linux/amd64
           build-args: |
             AENERIA_VERSION=${{ steps.versions.outputs.AENERIA_VERSION }}
+            NODE_VERSION=${{ steps.versions.outputs.NODE_VERSION }}
             PHP_FPM_VERSION=${{ steps.versions.outputs.PHP_FPM_VERSION }}
           tags: |
             ${{ github.repository }}:${{ steps.versions.outputs.AENERIA_VERSION_SHORT }}
