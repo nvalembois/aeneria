@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: ${{ github.ref_name == 'main' && 'write' || 'read' }}
+      packages: write
 
     steps:
       - 
