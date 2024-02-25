@@ -77,6 +77,6 @@ jobs:
             PHP_FPM_VERSION=${{ steps.versions.outputs.PHP_FPM_VERSION }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.versions.outputs.AENERIA_VERSION_SHORT }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.versions.outputs.AENERIA_VERSION_SHORT }}-${{ steps.versions.outputs.PHP_FPM_VERSION_SHORT }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.versions.outputs.AENERIA_VERSION_SHORT }}-php${{ steps.versions.outputs.PHP_FPM_VERSION_SHORT }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
