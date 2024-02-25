@@ -21,19 +21,19 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["node"],
-      "extractVersion": "^(?<version>[^-]+)(?<compatibility>-[^@]*)?(?:@(?<currentDigest>sha256:[a-f0-9]+))?$",
+      "versionCompatibility": "^(?<version>[^-]+)(?<compatibility>-[^@]*)?(?:@(?<currentDigest>sha256:[a-f0-9]+))?$",
       "versioning": "node",
       "major": false
     },
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["php"],
-      "extractVersion": "^(?<version>[^-]+)((?<compatibility>-[^@]*)?(?:@(?<currentDigest>sha256:[a-f0-9]+))?$"
+      "versionCompatibility": "^(?<version>[^-]+)((?<compatibility>-[^@]*)?(?:@(?<currentDigest>sha256:[a-f0-9]+))?$"
     },
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["nginx-unprivileged", "nginx"],
-      "extractVersion": "^(?<version>[^-]+)(?<compatibility>-[^@]*)?(?:@(?<currentDigest>sha256:[a-f0-9]+))?$"
+      "versionCompatibility": "^(?<version>[^-]+)(?<compatibility>-[^@]*)?(?:@(?<currentDigest>sha256:[a-f0-9]+))?$"
     },
     {
       "matchDepNames": ["aeneria/aeneria-app","docker.io/library/node"],
