@@ -21,21 +21,22 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["docker.io/library/node", "library/node", "node"],
+      "versionCompatibility": "^(?<version>[^-@]+)(?<compatibility>-[^@]*)?(?:@(?<currentDigest>sha256:[a-f0-9]+))?$",
       "versioning": "node",
+      "groupName": "app",
       "major": false
     },
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": [
         "docker.io/library/php", "library/php", "php",
-        "docker.io/library/node", "library/node", "node",
         "docker.io/nginxinc/nginx-unprivileged", "nginxinc/nginx-unprivileged",
         "docker.io/library/nginx", "library/nginx", "nginx"
       ],
       "versionCompatibility": "^(?<version>[^-@]+)(?<compatibility>-[^@]*)?(?:@(?<currentDigest>sha256:[a-f0-9]+))?$"
     },
     {
-      "matchDepNames": ["aeneria/aeneria-app","docker.io/library/node"],
+      "matchDepNames": ["aeneria/aeneria-app"],
       "groupName": "app"
     },
     {
