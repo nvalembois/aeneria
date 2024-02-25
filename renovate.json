@@ -16,15 +16,27 @@
   "packageRules": [
     {
       "matchDatasources": ["docker"],
-      "allowedVersions": "/-alpine/",
       "pinDigests": true
     },
     {
-      "matchDepNames": ["docker.io/library/node"],
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["node"],
+      "versionCompatibility": "^(?<version>[^-]+)(?<compatibility>-.*)?$",
+      "versioning": "node",
       "major": false
     },
     {
-      "matchDepNames": ["docker.io/library/node", "aeneria/aeneria-app"],
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["php"],
+      "versionCompatibility": "^(?<version>[^-]+)(?<compatibility>-.*)?"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["nginx-unprivileged", "nginx"],
+      "versionCompatibility": "^(?<version>[^-]+)(?<compatibility>-.*)?"
+    },
+    {
+      "matchDepNames": ["aeneria/aeneria-app","docker.io/library/node"],
       "groupName": "app"
     },
     {
