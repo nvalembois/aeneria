@@ -1,8 +1,7 @@
-name: Test app container builds
+name: app container build
 
 on:
   push:
-    branches-ignore: [ "main" ]
     paths:
       - 'images/app/*'
       - versions.txt

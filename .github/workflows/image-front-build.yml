@@ -1,8 +1,7 @@
-name: Test front container builds
+name: front container build
 
 on:
   push:
-    branches-ignore: [ "main" ]
     paths:
       - 'images/front/*'
       - versions.txt
