@@ -1,14 +1,15 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    "docker:pinDigests"
   ],
   "customManagers": [
     {
       "customType": "regex",
       "fileMatch": [ "^versions\\.txt$", "/versions\\.txt$" ],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s.+?_VERSION\\s*=\\s*\"?(?<currentValue>.+?)\"?(\\s|$)"
+        "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s.+?_VERSION\\s*=\\s*\"?(?<currentValue>[^@]+?)(?:@(?<currentDigest>sha256:[a-f0-9]+))?\"?(\\s|$)"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
@@ -16,24 +17,13 @@
   "packageRules": [
     {
       "matchDatasources": ["docker"],
-      "pinDigests": true
+      "versionCompatibility": "^(?<version>[^-]+)(?<compatibility>-.*)?$"
     },
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["docker.io/library/node", "library/node", "node"],
-      "versionCompatibility": "^(?<version>[^-@]+)(?<compatibility>-[^@]*)?(?:@(?<currentDigest>sha256:[a-f0-9]+))?$",
-      "versioning": "node",
       "groupName": "app",
       "major": false
-    },
-    {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": [
-        "docker.io/library/php", "library/php", "php",
-        "docker.io/nginxinc/nginx-unprivileged", "nginxinc/nginx-unprivileged",
-        "docker.io/library/nginx", "library/nginx", "nginx"
-      ],
-      "versionCompatibility": "^(?<version>[^-@]+)(?<compatibility>-[^@]*)?(?:@(?<currentDigest>sha256:[a-f0-9]+))?$"
     },
     {
       "matchDepNames": ["aeneria/aeneria-app"],
