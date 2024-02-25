@@ -2,6 +2,7 @@ name: Test app container builds
 
 on:
   push:
+    branches-ignore: [ "main" ]
     paths:
       - 'images/app/*'
       - versions.txt
