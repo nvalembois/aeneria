@@ -1,0 +1,59 @@
+---
+# https://cloudnative-pg.io/documentation/1.19/api_reference/#Cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "app.fullname" . }}-db
+  labels: 
+    {{- include "app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: db
+spec:
+  inheritedMetadata:
+    labels:
+      {{- include "app.labels" . | nindent 6 }}
+      app.kubernetes.io/component: db
+
+  instances: 1
+
+  # Allow a node maintenace with database interruption
+  nodeMaintenanceWindow:
+    inProgress: true
+    reusePVC: true
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/storage
+            operator: In
+            values:
+            - "true"
+    
+  storage:
+    size: {{ .Values.database.size  }}
+    storageClass: longhorn
+    resizeInUseVolumes: true
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.database.size  }}
+      volumeMode: Filesystem
+  walStorage:
+    size: {{ .Values.database.size  }}
+    storageClass: longhorn
+    resizeInUseVolumes: true
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.database.size  }}
+      volumeMode: Filesystem
+
+  bootstrap:
+    initdb:
+      database: {{ .Values.database.database  }}
+      owner: {{ .Values.database.username  }}

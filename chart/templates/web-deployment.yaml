@@ -1,0 +1,226 @@
+{{/*
+Create web env
+*/}}
+{{- define "app.env" -}}
+- name: DATABASE_URL
+  valueFrom:
+    secretKeyRef:
+      key: uri
+      name: "{{ include "app.fullname" . }}-db-app"
+- name: APP_SECRET
+  valueFrom:
+    secretKeyRef:
+      key: app
+      name: {{ include "app.fullname" . | quote }}
+{{- if hasKey .Values.app "TRUSTED_PROXIES" }}
+- name: TRUSTED_PROXIES
+  value: {{ .Values.app.TRUSTED_PROXIES | quote }}
+{{- end }}
+{{- if hasKey .Values.app "announcementText" }}
+- name: INSTANCE_ANNOUNCEMENT_HTML
+  value: {{ .Values.app.announcementText | quote }}
+{{- end }}
+{{- if hasKey .Values.app "announcementStyle" }}
+- name: INSTANCE_ANNOUNCEMENT_STYLE
+  value: {{ .Values.app.announcementStyle | quote }}
+{{- end }}
+{{- if hasKey .Values.app "locale" }}
+- name: INSTANCE_LOCALE
+  value: {{ .Values.app.locale | quote }}
+{{- end }}
+{{- if hasKey .Values.app "location" }}
+- name: INSTANCE_LOCATION
+  value: {{ .Values.app.location | quote }}
+{{- end }}
+{{- if hasKey .Values.app "name" }}
+- name: INSTANCE_NAME
+  value: {{ .Values.app.name | quote }}
+{{- end }}
+{{- if hasKey .Values.app "noticeWIP" }}
+- name: INSTANCE_NOTICE_WORK_IN_PROGRESS
+  value: {{ .Values.app.noticeWIP | quote }}
+{{- end }}
+{{- if hasKey .Values.app "fromEmail" }}
+- name: INSTANCE_NOTIFICATION_FROM_EMAIL
+  value: {{ .Values.app.fromEmail | quote }}
+{{- end }}
+{{- if hasKey .Values.app "backAllowedPictureMimes" }}
+- name: INSTANCE_MAPS_ALLOWED_PICTURE_MIMES
+  value: {{ .Values.app.backAllowedPictureMimes | quote }}
+{{- end }}
+{{- if hasKey .Values.app "observationAllowedPictureMimes" }}
+- name: INSTANCE_OBSERVATIONS_ALLOWED_PICTURE_MIMES
+  value: {{ .Values.app.observationAllowedPictureMimes | quote }}
+{{- end }}
+{{- if hasKey .Values.app "observationAllowedPictureMaxSide" }}
+- name: INSTANCE_OBSERVATIONS_LARGEST_PICTURE_SIDE
+  value: {{ .Values.app.observationAllowedPictureMaxSide | quote }}
+{{- end }}
+{{- if hasKey .Values.app "privacyNotice" }}
+- name: INSTANCE_PRIVACY_NOTICE
+  value: {{ .Values.app.privacyNotice | quote }}
+{{- end }}
+{{- if hasKey .Values.app "punchline" }}
+- name: INSTANCE_PUNCHLINE
+  value: {{ .Values.app.punchline | quote }}
+{{- end }}
+{{- if hasKey .Values.app "unreleasedFeatures" }}
+- name: INSTANCE_SHOW_UNRELEASED_FEATURES
+  value: {{ .Values.app.unreleasedFeatures | quote }}
+{{- end }}
+{{- if hasKey .Values.app "trustedDatasource" }}
+- name: INSTANCE_TRUSTED_DATASOURCE_URL
+  value: {{ .Values.app.trustedDatasource | quote }}
+{{- end }}
+{{- if hasKey .Values.app "urlHostname" }}
+- name: INSTANCE_URL_HOST
+  value: {{ .Values.app.urlHostname | quote }}
+{{- end }}
+{{- if hasKey .Values.app "urlPort" }}
+- name: INSTANCE_URL_PORT
+  value: {{ .Values.app.urlPort | quote }}
+{{- end }}
+{{- if hasKey .Values.app "communitySiteUrl" }}
+- name: INSTANCE_WEBSITE_URL
+  value: {{ .Values.app.communitySiteUrl | quote }}
+{{- end }}
+{{- if hasKey .Values.app "communityChatUrl" }}
+- name: INSTANCE_CHAT_URL
+  value: {{ .Values.app.communityChatUrl | quote }}
+{{- end }}
+{{- if hasKey .Values.app "communityForumUrl" }}
+- name: INSTANCE_FORUM_URL
+  value: {{ .Values.app.communityForumUrl | quote }}
+{{- end }}
+{{- if hasKey .Values.app "logLevel" }}
+- name: RAILS_LOG_LEVEL
+  value: {{ .Values.app.logLevel | quote }}
+{{- end }}
+{{- if .Values.app.logToStdout }}
+- name: RAILS_LOG_TO_STDOUT
+  value: "true"
+{{- end }}
+{{- if hasKey .Values.app "maxThreads" }}
+- name: RAILS_MAX_THREADS
+  value: {{ .Values.app.maxThreads | quote }}
+{{- end }}
+{{- if hasKey .Values.app "serveStaticFiles" }}
+- name: RAILS_SERVE_STATIC_FILES
+  value: {{ .Values.app.serveStaticFiles | quote }}
+{{- end }}
+- name: INSTANCE_SECRET_KEY_JWT
+  valueFrom:
+    secretKeyRef:
+        key: jwt
+        name: {{ include "app.fullname" . | quote }}
+{{- end }}
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        {{- include "app.labels" . | nindent 8 }}
+    spec:
+      automountServiceAccountToken: false
+      {{- with .Values.extraPodOptions }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+        {{- range $type, $typeDef := .Values.affinity }}
+        {{ $type }}:
+          {{- range $spec, $specDef := $typeDef }}
+          {{ $spec }}:
+            nodeSelectorTerms:
+            {{- range $key, $values := $specDef }}
+            - matchExpressions:
+              - key: {{ $key | quote }}
+                operator: In
+                values:
+                {{- range $value := $values }}
+                - {{ $value | quote }}
+                {{- end }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        # runAsUser: 1000
+        # runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: app
+        image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              key: uri
+              name: "{{ include "app.fullname" . }}-db-app"
+        - name: APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: app
+              name: {{ include "app.fullname" . | quote }}
+        {{- range $name, $value := .Values.app_env }}
+        - name: {{ $name | quote }}
+          value: {{ $value | quote }}
+        {{- end }}
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        readyness:
+          httpGet:
+            path: /
+            port: 8080
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          timeoutSeconds: 3
+      - name: front
+        image: "{{ .Values.front.image.repository }}:{{ .Values.front.image.tag | default .Chart.AppVersion }}"
+        env:
+          {{- include "app.env" . | nindent 8 }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          timeoutSeconds: 3
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      restartPolicy: Always
+      volumes:
+      - name: socket
+        emptyDir:

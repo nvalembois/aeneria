@@ -1,0 +1,9 @@
+# Chart.yaml
+apiVersion: v2
+name: aeneria
+description: aeneria deployment via Helm
+type: application
+version: 1.0.0
+# renovate: image=ghcr.io/nvalembois/aeneria-app
+appVersion: 2.1.1
+kubeVersion: ">=1.22.0-0"
