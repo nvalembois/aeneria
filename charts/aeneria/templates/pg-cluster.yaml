@@ -1,3 +1,4 @@
+{{- if eq .Values.db.type "cnpg" -}}
 ---
 # https://cloudnative-pg.io/documentation/1.19/api_reference/#Cluster
 apiVersion: postgresql.cnpg.io/v1
@@ -20,18 +21,28 @@ spec:
     inProgress: true
     reusePVC: true
 
+  {{- if .Values.db.affinity }}
   affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
+    {{- range $type, $typeDef := .Values.db.affinity }}
+    {{ $type }}:
+      {{- range $spec, $specDef := $typeDef }}
+      {{ $spec }}:
         nodeSelectorTerms:
+        {{- range $key, $values := $specDef }}
         - matchExpressions:
-          - key: node-role.kubernetes.io/storage
+          - key: {{ $key | quote }}
             operator: In
             values:
-            - "true"
+            {{- range $value := $values }}
+            - {{ $value | quote }}
+            {{- end }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
     
   storage:
-    size: {{ .Values.database.size  }}
+    size: {{ .Values.db.size  }}
     storageClass: longhorn
     resizeInUseVolumes: true
     pvcTemplate:
@@ -39,10 +50,10 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: {{ .Values.database.size  }}
+          storage: {{ .Values.db.size  }}
       volumeMode: Filesystem
   walStorage:
-    size: {{ .Values.database.size  }}
+    size: {{ .Values.db.size  }}
     storageClass: longhorn
     resizeInUseVolumes: true
     pvcTemplate:
@@ -50,10 +61,12 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: {{ .Values.database.size  }}
+          storage: {{ .Values.db.size  }}
       volumeMode: Filesystem
 
   bootstrap:
     initdb:
-      database: {{ .Values.database.database  }}
-      owner: {{ .Values.database.username  }}
+      database: {{ .Values.db.database  }}
+      owner: {{ .Values.db.username  }}
+
+{{- end -}}

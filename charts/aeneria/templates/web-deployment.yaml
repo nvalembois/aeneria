@@ -1,0 +1,95 @@
+{{/*
+Create web env
+*/}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: web
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        {{- include "app.labels" . | nindent 8 }}
+        app.kubernetes.io/component: web
+    spec:
+      automountServiceAccountToken: false
+      {{- with .Values.extraPodOptions }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+        {{- range $type, $typeDef := .Values.affinity }}
+        {{ $type }}:
+          {{- range $spec, $specDef := $typeDef }}
+          {{ $spec }}:
+            nodeSelectorTerms:
+            {{- range $key, $values := $specDef }}
+            - matchExpressions:
+              - key: {{ $key | quote }}
+                operator: In
+                values:
+                {{- range $value := $values }}
+                - {{ $value | quote }}
+                {{- end }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        # runAsUser: 1000
+        # runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      restartPolicy: Always
+      containers:
+      - name: app
+        image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+        env:
+        {{- include "app.env" . | nindent 8 }}
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      - name: front
+        image: "{{ .Values.front.image.repository }}:{{ .Values.front.image.tag | default .Chart.AppVersion }}"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          failureThreshold: 3
+          periodSeconds: 60
+          timeoutSeconds: 3
+        startupProbe:
+          httpGet:
+            path: /
+            port: 8080
+          failureThreshold: 300
+          initialDelaySeconds: 5
+          periodSeconds: 1
+          timeoutSeconds: 3
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL

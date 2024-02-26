@@ -1,0 +1,81 @@
+# ---
+# https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
+
+
+front:
+  image: 
+    repository: ghcr.io/nvalembois/aeneria-front
+    tag: 2.1.1-nginx1.25.4-alpine
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+app:
+  image: 
+    repository: ghcr.io/nvalembois/aeneria-app
+    tag: 2.1.1-php8.3.3-alpine
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+  env: {}
+    # APP_ENV: prod
+    # AENERIA_USER_MAX_PLACES: -1
+    # AENERIA_USER_CAN_SHARE_PLACE: 1
+    # AENERIA_USER_CAN_FETCH: 1
+    # AENERIA_USER_CAN_EXPORT: 1
+    # AENERIA_USER_CAN_IMPORT: 1
+    # AENERIA_PLACE_CAN_BE_PUBLIC: 1
+    # AENERIA_DEMO_MODE: 0
+    # AENERIA_WELCOME_MESSAGE: '<h1>Bienvenue sur æneria</h1>'
+    # AENERIA_PROXY_URL: https://proxy.aeneria.com
+    # AENERIA_PROXY_FOR_ENEDIS: ''
+    # AENERIA_PROXY_FOR_GRDF: ''
+    # ENEDIS_CLIENT_ID: ''
+    # ENEDIS_CLIENT_SECRET: ''
+    # ENEDIS_REDIRECT_URI: ''
+    # ENEDIS_ENDPOINT_AUTH: https://mon-compte-particulier.enedis.fr
+    # ENEDIS_ENDPOINT_TOKEN: https://ext.prod.api.enedis.fr
+    # ENEDIS_ENDPOINT_DATA: https://ext.prod.api.enedis.fr
+    # GRDF_CLIENT_ID: ''
+    # GRDF_CLIENT_SECRET: ''
+    # GRDF_REDIRECT_URI: ''
+    # GRDF_ENDPOINT_AUTH: https://sofit-sso-oidc.grdf.fr
+    # GRDF_ENDPOINT_DATA: https://api.grdf.fr
+  sealedSecret:
+    # This secret is responsible for many cryptographic methods in the app. You definitely want to have a different one per instance.
+    # cat /dev/urandom | tr -dc 'a-zA-Z0-9-_,;/' | fold -w 128 | head -n 1 | kubeseal --from-file=app=/dev/stdin --name aeneris -n usr-aeneris --raw --controller-namespace=kube-sealed-secrets --controller-name=sealed-secrets
+    app: AgBPMUP6ssBU/6hVZD29fYIMuKmiDEz4vdNq0QFOWU4cwMc+0OCVTlj9aNRGJnnx52h8FYkc2xiIHPdE3icWOdu3WOB9mVRJDVfp3KooYxjp4B6JyBsA3QLsacmQqUsDzSBDfDA8HGsQ4x13ghvWwU/SpC2zudsOYXVS7HNCELeFr097197No5Gt1ANfkU8YAI+4PISFdsrq8BnV2YHA1AOlJpdQnDDLuTpCxBuWOq3DwprMqK64QQZRE7QPpNrIAhlYbLiNbiYIzEFyU2r8Iu+0kuIm8Gam+OdKVQ3o0IQ6yOGLsb7tm25h8Pb+BfumL9S+yhkrmxb8psUQxQ0c+tGOIs7Ghv/Bv8bgV9+BXrR+VEZNeR29hcU0F6ujtKS7uCo9ygATVKDXp2wl/mDw+U07y36lcBwkBZ6NGSev+HvQ69qL9i81Ll6dW3wD7TzKSdU1nzBXXcZNzWJBJ0YiXBizbQlOs/oBsh1DtoFitHTKr21KQksQhEdD+NzgsJ1lmO14JZjLXrZJHb7MFp8MbsJj1S27n6YX6yxmT1SwvLovszKV+6ZT+QDMSq5KmxZ7xLELPow+RZY9081fIZMaIcMP1QojAfkg73QyuhAtHWBMTAQnUkshPs3Cm6dWU0ChVli0ivDQ2/UpiIZdxU/8e3OyC7US6nWADmbBBKT9Z3b+Wh3nRVPfX+OqJhM7CbSt0NKbYeC3LxMLC89/RgkQBkoaY0ylZO1pZTnr8RsSYqxnX13IMqcMetYmqZ5TkTEejeAaiSRonlDya+3ShrafV97sUFQZvS8s7ZW5FW5PKYKq7cjqdAnZTRLTni2RhThbD4A3MlywVI26/69PzLQJx7fzT9/xH4kbo7Tonu5bzrcqUKk=
+    extraValues: {}
+
+db:
+  type: cnpg
+  database: aeneris
+  username: aeneris
+  size: 2Gi
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        node-role.kubernetes.io/storage: [ "true" ]
+
+extraPodOptions: {}
+affinity: {}
+# nodeAffinity:
+#   requiredDuringSchedulingIgnoredDuringExecution:
+#     node-role.kubernetes.io/storage: [ "true" ]
+
+ingress:
+  enabled: true
+  host: aeneris.local 
+
+# -- Configure the networkPolicies for the chart here.
+# Additional networkPolicies can be added by adding a dictionary key similar to the 'main' networkPolicy.
+# @default -- See below
+networkpolicies:
+ enabled: true

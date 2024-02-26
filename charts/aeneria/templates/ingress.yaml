@@ -1,3 +1,4 @@
+{{- if .Values.ingress.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -7,11 +8,11 @@ metadata:
     {{- include "app.labels" . | nindent 4 }}
   annotations:
     cert-manager.io/cluster-issuer: ingress-issuer
-    cert-manager.io/common-name: {{ .Values.app.urlHostname | quote }}
+    cert-manager.io/common-name: {{ .Values.ingress.host }}
     ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   rules:
-  - host: {{ .Values.app.urlHostname }}
+  - host: {{ .Values.ingress.host }}
     http:
       paths:
       - backend:
@@ -23,5 +24,7 @@ spec:
         pathType: Prefix
   tls:
   - hosts:
-    - {{ .Values.app.urlHostname }}
-    secretName: {{ .Values.app.urlHostname }}-tls
+    - {{ .Values.ingress.host }}
+    secretName: {{ .Values.ingress.host }}-tls
+
+{{- end }}
