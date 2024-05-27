@@ -19,7 +19,8 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["docker.io/library/node", "library/node", "node"],
-      "groupName": "app"  
+      "groupName": "app",
+      "major": false
     },
     {
       "matchDepNames": ["aeneria/aeneria-app"],
