@@ -2,7 +2,8 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    "docker:pinDigests"
+    "docker:pinDigests",
+    ":automergeMinor"
   ],
   "customManagers": [
     {
@@ -18,8 +19,7 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["docker.io/library/node", "library/node", "node"],
-      "groupName": "app",
-      "major": false
+      "groupName": "app"  
     },
     {
       "matchDepNames": ["aeneria/aeneria-app"],
