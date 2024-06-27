@@ -1,3 +1,3 @@
 # renovate: datasource=docker depName=docker.io/nginxinc/nginx-unprivileged versioning=docker
-NGINX_VERSION=1.27.0-alpine@sha256:2c0572346b46c2a86e6edb3d3dc8a3ac822891d86b9fced939737bc26367a102
+NGINX_VERSION=1.27.0-alpine@sha256:c1ed79a76dc5909cc9f2e821b83a4dcf104768cd3ab699a67135c753801bc351
 # ensure newline after last value
