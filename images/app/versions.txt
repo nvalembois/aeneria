@@ -1,3 +1,3 @@
 # renovate: datasource=docker depName=docker.io/library/php versioning=docker
-PHP_FPM_VERSION=8.3.9-fpm-alpine@sha256:bebce2701535ce992aacf81c376b6d79f922ae04478b6794cd688abb7172500d
+PHP_FPM_VERSION=8.3.9-fpm-alpine@sha256:500a13dcd0bf826285c5d6c26c20dcf9bfd8119b5d5588410e4336607e2b59b0
 # ensure newline after last value
